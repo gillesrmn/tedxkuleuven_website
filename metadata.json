@@ -1,0 +1,9 @@
+{
+  "name": "TEDxKU Leuven - Ideas Worth Spreading",
+  "description": "A comprehensive community platform for TEDxKU Leuven, featuring event management, ticketing, speaker applications, and team coordination.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone",
+    "geolocation"
+  ]
+}

@@ -1,37 +1,59 @@
 
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { useApp } from '../context/AppContext';
 
 const Events: React.FC = () => {
-  const [timeLeft, setTimeLeft] = useState({ days: 24, hours: 12, minutes: 45, seconds: 30 });
+  const { eventInfo, speakers } = useApp();
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   useEffect(() => {
+    const targetDate = new Date(eventInfo.date).getTime();
+    
     const timer = setInterval(() => {
-      setTimeLeft(prev => {
-        if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
-        if (prev.minutes > 0) return { ...prev, minutes: prev.minutes - 1, seconds: 59 };
-        if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
-        if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
-        return prev;
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      
+      if (distance < 0) {
+        clearInterval(timer);
+        return;
+      }
+
+      setTimeLeft({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000),
       });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [eventInfo.date]);
+
+  const formattedDate = new Date(eventInfo.date).toLocaleDateString('en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric'
+  });
+
+  const formattedTime = new Date(eventInfo.date).toLocaleTimeString('en-GB', {
+    hour: '2-digit', minute: '2-digit'
+  });
+
+  const heroStyle = eventInfo.coverImg 
+    ? { backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.7) 100%), url("${eventInfo.coverImg}")` }
+    : { backgroundImage: `linear-gradient(rgba(230, 43, 30, 0.4) 0%, rgba(10, 10, 10, 0.9) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAi0FrdnJxt0MGs98wFUfbVviCot74_-asR-C121W9HL8I6vT-JM3NTCixi-8cz6ZfMep8ShqiXABYrTPGc48aWuZdZve0vVpwSBdzpfr83FrvCxQBbKjNYcXXoRcAMrxiAdDt6Xig1ZUINH9pDB7MghvHSuwzPyiAoX6jYg8_NMPbeXdtkSirM6ufdiz_s51r5G9cYeDUeybX-mhMdMS-WNHO39IrO824bANgc5kija9Hx2lv0Y-VImwodzQtW9ublr3h8fj2XFWU")` };
 
   return (
     <div className="bg-background-dark min-h-screen text-left">
-      {/* Hero Countdown */}
       <div className="flex justify-center pt-10 px-6">
         <div className="layout-content-container flex flex-col max-w-[1200px] flex-1">
           <div className="relative min-h-[450px] flex flex-col gap-6 bg-cover bg-center bg-no-repeat rounded-2xl items-center justify-center p-8 border border-white/5 shadow-2xl overflow-hidden" 
-               style={{backgroundImage: `linear-gradient(rgba(10, 10, 10, 0.85) 0%, rgba(10, 10, 10, 0.7) 100%), url("https://lh3.googleusercontent.com/aida-public/AB6AXuAi0FrdnJxt0MGs98wFUfbVviCot74_-asR-C121W9HL8I6vT-JM3NTCixi-8cz6ZfMep8ShqiXABYrTPGc48aWuZdZve0vVpwSBdzpfr83FrvCxQBbKjNYcXXoRcAMrxiAdDt6Xig1ZUINH9pDB7MghvHSuwzPyiAoX6jYg8_NMPbeXdtkSirM6ufdiz_s51r5G9cYeDUeybX-mhMdMS-WNHO39IrO824bANgc5kija9Hx2lv0Y-VImwodzQtW9ublr3h8fj2XFWU")`}}>
-            <div className="flex flex-col gap-4 text-center max-w-2xl">
+               style={heroStyle}>
+            <div className="flex flex-col gap-4 text-center max-w-2xl relative z-10">
               <span className="text-primary font-bold tracking-widest uppercase text-sm">Next Flagship Event</span>
-              <h1 className="text-white text-5xl md:text-7xl font-black leading-tight tracking-tight">Beyond Boundaries</h1>
-              <p className="text-gray-400 text-lg md:text-xl font-medium">Join us for a day of transformative ideas and groundbreaking talks at KU Leuven.</p>
+              <h1 className="text-white text-5xl md:text-7xl font-black leading-tight tracking-tight uppercase">{eventInfo.title}</h1>
+              <p className="text-gray-400 text-lg md:text-xl font-medium">{eventInfo.description}</p>
             </div>
             
-            <div className="flex gap-4 py-6 px-4 w-full max-w-lg">
+            <div className="flex gap-4 py-6 px-4 w-full max-w-lg relative z-10">
               {Object.entries(timeLeft).map(([unit, value]) => (
                 <div key={unit} className="flex grow basis-0 flex-col items-stretch gap-2">
                   <div className="flex h-16 md:h-20 grow items-center justify-center rounded-xl px-3 bg-white/5 backdrop-blur-md border border-white/10">
@@ -44,57 +66,54 @@ const Events: React.FC = () => {
               ))}
             </div>
 
-            <Link to="/tickets" className="flex min-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-primary text-white text-lg font-extrabold leading-normal tracking-[0.015em] hover:bg-red-700 hover:scale-105 transition-all">
+            <Link to="/tickets" className="flex min-w-[200px] cursor-pointer items-center justify-center overflow-hidden rounded-full h-14 px-8 bg-primary text-white text-lg font-extrabold leading-normal tracking-[0.015em] hover:bg-red-700 hover:scale-105 transition-all uppercase tracking-widest relative z-10">
               <span className="truncate">Get Your Tickets</span>
             </Link>
           </div>
         </div>
       </div>
 
-      {/* Practical Info & Timeline */}
       <div className="mx-auto max-w-[1200px] px-6 py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20">
           <div>
-            <h2 className="text-white text-3xl font-black mb-8 border-l-4 border-primary pl-4">Practical Information</h2>
-            <div className="space-y-6">
-              <div className="flex gap-4">
-                <span className="material-symbols-outlined text-primary">location_on</span>
-                <div>
-                  <h4 className="text-white font-bold">Venue</h4>
-                  <p className="text-zinc-400">Pieter De Somer Aula, Naamsestraat 22, 3000 Leuven</p>
-                </div>
-              </div>
+            <h2 className="text-white text-3xl font-black mb-8 border-l-4 border-primary pl-4 uppercase tracking-tighter">Practical Information</h2>
+            <div className="space-y-8 text-white">
               <div className="flex gap-4">
                 <span className="material-symbols-outlined text-primary">schedule</span>
                 <div>
-                  <h4 className="text-white font-bold">Time</h4>
-                  <p className="text-zinc-400">Doors open: 09:30 AM | Event ends: 06:30 PM</p>
+                  <h4 className="font-bold uppercase tracking-tighter text-sm">Time</h4>
+                  <p className="text-zinc-400 font-medium">{formattedDate} • Starts at {formattedTime}</p>
                 </div>
               </div>
               <div className="flex gap-4">
-                <span className="material-symbols-outlined text-primary">info</span>
+                <span className="material-symbols-outlined text-primary">location_on</span>
                 <div>
-                  <h4 className="text-white font-bold">Entry Requirements</h4>
-                  <p className="text-zinc-400">Please have your digital ticket and a valid ID (Student ID for student tickets) ready for scanning.</p>
+                  <h4 className="font-bold uppercase tracking-tighter text-sm">Venue</h4>
+                  <p className="text-zinc-400 font-medium">{eventInfo.venue}</p>
                 </div>
               </div>
+              
+              {/* CONDITIONAL RED REMARKS BOX */}
+              {eventInfo.remarks && (
+                <div className="flex gap-4 bg-primary/10 p-6 rounded-2xl border border-primary/20 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <span className="material-symbols-outlined text-primary">info</span>
+                  <div>
+                    <h4 className="font-bold uppercase tracking-tighter text-sm text-primary mb-1">Important Remarks</h4>
+                    <p className="text-zinc-300 text-sm font-medium leading-relaxed">
+                      {eventInfo.remarks}
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
           <div>
-            <h2 className="text-white text-3xl font-black mb-8 border-l-4 border-primary pl-4">Day Timeline</h2>
+            <h2 className="text-white text-3xl font-black mb-8 border-l-4 border-primary pl-4 uppercase tracking-tighter">Event Timeline</h2>
             <div className="space-y-4">
-              {[
-                { time: "09:30", event: "Registration & Coffee" },
-                { time: "10:30", event: "Opening Ceremony & Session 1" },
-                { time: "12:30", event: "Lunch & Networking Lab" },
-                { time: "14:00", event: "Session 2: The Future of Ethics" },
-                { time: "15:30", event: "Interactive Workshops" },
-                { time: "17:00", event: "Grand Finale: Session 3" },
-                { time: "18:30", event: "Closing Reception" }
-              ].map((item, i) => (
-                <div key={i} className="flex gap-6 items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl">
+              {eventInfo.timeline.map((item) => (
+                <div key={item.id} className="flex gap-6 items-center p-4 bg-zinc-900 border border-zinc-800 rounded-xl group hover:border-primary/30 transition-all">
                   <span className="text-primary font-black text-lg w-16">{item.time}</span>
-                  <p className="text-white font-medium">{item.event}</p>
+                  <p className="text-white font-black uppercase tracking-tighter text-sm">{item.activity}</p>
                 </div>
               ))}
             </div>
@@ -102,72 +121,31 @@ const Events: React.FC = () => {
         </div>
       </div>
 
-      {/* Featured Speakers */}
       <div className="bg-black py-20">
         <div className="mx-auto max-w-[1200px] px-6">
-          <h2 className="text-white text-3xl font-black mb-12 border-l-4 border-primary pl-4 text-center lg:text-left">2024 Speaker Lineup</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-            {[
-              { name: "Prof. Elena Rossi", bio: "Leading quantum physicist exploring the boundaries of matter and consciousness.", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" },
-              { name: "Marcus Thorne", bio: "Urban designer reimagining cities through the lens of radical inclusivity and green tech.", img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800" },
-              { name: "Sara Al-Fayed", bio: "Award-winning investigative journalist focusing on the impact of AI on democracy.", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=800" }
-            ].map((speaker, i) => (
-              <div key={i} className="group bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 hover:border-primary/50 transition-all">
-                <div className="aspect-[4/5] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
-                  <img src={speaker.img} alt={speaker.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                </div>
-                <div className="p-8">
-                  <h3 className="text-white text-2xl font-black mb-2">{speaker.name}</h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{speaker.bio}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Past Events List */}
-      <div className="flex justify-center pb-20 px-6">
-        <div className="layout-content-container flex flex-col max-w-[1200px] flex-1">
-          <div className="flex items-center justify-between pt-16 pb-12">
-            <h2 className="text-white text-3xl font-black leading-tight tracking-tight">Past Events</h2>
-            <div className="h-px grow mx-8 bg-white/10 hidden md:block"></div>
-            <p className="text-gray-400 font-bold">Relive the moments</p>
-          </div>
-
-          <div className="flex flex-col gap-12">
-            {[
-              { 
-                edition: '2023 Edition', 
-                date: 'May 15, 2023', 
-                title: 'The Future of Us', 
-                desc: 'Exploring the intersection of humanity and technology, this event brought together 10 speakers to discuss how we can shape a better tomorrow together.',
-                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAtFvUXJc8zqIi5jyrLK_jkWv16QEKSee02vpFIuFF8Eh_meGm7lVF_4F_gaWDb3rBtMYcleIGYMzGCTEbCt9xiWIRxy67gW9-eMnA7AofBG7ZyiAmMTfWgUbQD8ysUhWLhD0CgVtub9RGOkW0pOBYpbdph7tDch_W0NfaMDktZxEub8kR8-5eEWUtzuXf0jJksoACIbrWXRlr_jlMSQYR7elz3AVVaIjOtCh_hhwnMZyiyF6kcPMM46XcmDsgSAeBTzBVRRlKQ4sY'
-              },
-              { 
-                edition: '2022 Edition', 
-                date: 'November 20, 2022', 
-                title: 'Connections', 
-                desc: 'A deep dive into the invisible threads that bind us. From neurobiology to urban planning, we discovered how connectivity defines our existence.',
-                img: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCFmM9DqvBUS0iATnA_XqJFnyqiGfuYjOCsbi9i32wyzOWsPDn0ZqXX4NsIsFnLKsxKQeNw2daJ9d1NHtGrK9tvOl9lRFW7yxrGB-7049itmmfjxHuViJVqj8t_Wv5iLB5ns51ZsTV0DiGZjFZo9ohWlkjAH0Cp3MNKKSGv1KE8YR6MR1oUUthNszUZvVP46oyKEfBdXPdJpfXRLahixHS0846GWBaQ0Q2Omyj_6956RNzc6Oadq8KckA1iu1CkSFnF06kspo9gTA0',
-                reverse: true
-              }
-            ].map((ev, i) => (
-              <div key={i} className={`group flex flex-col ${ev.reverse ? 'md:flex-row-reverse' : 'md:flex-row'} gap-8 bg-surface-dark rounded-2xl overflow-hidden border border-white/5 hover:border-white/20 transition-all duration-300 shadow-xl`}>
-                <div className="w-full md:w-1/2 aspect-video overflow-hidden">
-                  <div className="h-full w-full bg-cover bg-center group-hover:scale-105 transition-transform duration-700" style={{backgroundImage: `url("${ev.img}")`}}></div>
-                </div>
-                <div className="w-full md:w-1/2 p-8 flex flex-col justify-center gap-4">
-                  <div className="flex items-center gap-3">
-                    <span className="px-3 py-1 bg-primary text-[10px] font-black uppercase rounded-full tracking-widest text-white">{ev.edition}</span>
-                    <span className="text-white/40 text-sm font-medium">{ev.date}</span>
+          <h2 className="text-white text-3xl font-black mb-12 border-l-4 border-primary pl-4 uppercase tracking-tighter">Current Speaker Lineup</h2>
+          {speakers.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+              {speakers.map((speaker) => (
+                <a key={speaker.id} href={speaker.linkedin} target="_blank" rel="noopener noreferrer" className="group block bg-zinc-900 rounded-3xl overflow-hidden border border-zinc-800 hover:border-primary/50 transition-all">
+                  <div className="aspect-[4/5] overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                    <img src={speaker.img} alt={speaker.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
                   </div>
-                  <h3 className="text-3xl font-extrabold text-white group-hover:text-primary transition-colors">{ev.title}</h3>
-                  <p className="text-gray-400 leading-relaxed text-base">{ev.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+                  <div className="p-8">
+                    <h3 className="text-white text-2xl font-black mb-1 uppercase tracking-tighter group-hover:text-primary transition-colors">{speaker.name}</h3>
+                    <p className="text-primary text-[10px] font-black uppercase tracking-[0.2em] mb-4">"{speaker.talkTitle}"</p>
+                    <p className="text-zinc-400 text-sm leading-relaxed font-medium">{speaker.bio}</p>
+                  </div>
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-zinc-900/50 rounded-3xl border border-dashed border-zinc-800 p-20 text-center">
+              <span className="material-symbols-outlined text-primary text-6xl mb-6">campaign</span>
+              <p className="text-white text-2xl font-black uppercase tracking-tighter">Speakers will be announced shortly</p>
+              <p className="text-zinc-500 mt-2 font-medium">Follow us on social media for the latest reveal.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

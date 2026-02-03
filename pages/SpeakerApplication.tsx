@@ -1,7 +1,31 @@
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useApp } from '../context/AppContext';
 
 const SpeakerApplication: React.FC = () => {
+  const [submitted, setSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '', lastName: '', email: '', org: '', talkTitle: '', idea: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert("Application submitted! Your concept has been forwarded to curation@tedxkuleuven.com for review.");
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <div className="bg-background-dark min-h-screen flex items-center justify-center p-6">
+        <div className="text-center max-w-xl bg-zinc-900 border border-zinc-800 p-12 rounded-[2rem] shadow-2xl">
+          <span className="material-symbols-outlined text-primary text-8xl mb-8">celebration</span>
+          <h1 className="text-white text-5xl font-black mb-4 uppercase tracking-tighter">Submission Received</h1>
+          <p className="text-zinc-400 text-xl font-medium">Thank you for sharing your idea with TEDxKU Leuven. Our curation team at curation@tedxkuleuven.com will review your concept and reach out if there's a potential fit for our upcoming stage.</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-background-dark min-h-screen text-white font-display pt-12 pb-20 text-left">
       <div className="layout-content-container flex flex-col w-full max-w-[960px] mx-auto px-6">
@@ -17,41 +41,59 @@ const SpeakerApplication: React.FC = () => {
 
         <div className="flex flex-wrap justify-between gap-3 py-12">
           <div className="flex min-w-72 flex-col gap-3">
-            <p className="text-white text-4xl font-black leading-tight tracking-[-0.033em]">Submit your Concept</p>
-            <p className="text-neutral-400 text-base font-normal leading-normal">Ready to step onto the red circle? Fill out the details below to nominate yourself or someone else.</p>
+            <p className="text-white text-4xl font-black leading-tight tracking-[-0.033em] uppercase">Submit your Concept</p>
+            <p className="text-zinc-400 text-base font-normal leading-normal font-medium">Ready to step onto the red circle? Fill out the details below to nominate yourself or someone else.</p>
           </div>
         </div>
 
-        <form className="space-y-8">
+        <form onSubmit={handleSubmit} className="space-y-12">
           <div>
-            <h2 className="text-white text-[22px] font-bold leading-tight flex items-center gap-2 mb-6">
+            <h2 className="text-white text-2xl font-black uppercase tracking-tight flex items-center gap-3 mb-8">
               <span className="material-symbols-outlined text-primary">person</span>
               Personal Information
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <input className="bg-neutral-900 border-neutral-800 rounded-lg p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="First Name" />
-              <input className="bg-neutral-900 border-neutral-800 rounded-lg p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="Last Name" />
-              <input className="bg-neutral-900 border-neutral-800 rounded-lg p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="Email Address" type="email" />
-              <input className="bg-neutral-900 border-neutral-800 rounded-lg p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="Organization/Department" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">First Name</label>
+                <input required value={formData.firstName} onChange={e => setFormData({...formData, firstName: e.target.value})} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="e.g. Maria" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Last Name</label>
+                <input required value={formData.lastName} onChange={e => setFormData({...formData, lastName: e.target.value})} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="e.g. Janssens" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Email Address</label>
+                <input required type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="maria@kuleuven.be" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Organization</label>
+                <input value={formData.org} onChange={e => setFormData({...formData, org: e.target.value})} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="e.g. Faculty of Engineering" />
+              </div>
             </div>
           </div>
 
           <div>
-            <h2 className="text-white text-[22px] font-bold leading-tight flex items-center gap-2 mb-6">
+            <h2 className="text-white text-2xl font-black uppercase tracking-tight flex items-center gap-3 mb-8">
               <span className="material-symbols-outlined text-primary">lightbulb</span>
               Talk Idea & Title
             </h2>
-            <div className="flex flex-col gap-6">
-              <input className="bg-neutral-900 border-neutral-800 rounded-lg p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="Final Title of your Talk" />
-              <textarea className="bg-neutral-900 border-neutral-800 rounded-lg p-4 text-white focus:ring-primary focus:border-primary min-h-[160px] outline-none" placeholder="Briefly describe your idea and why it matters to the world..."></textarea>
+            <div className="flex flex-col gap-8">
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">Working Title</label>
+                <input required value={formData.talkTitle} onChange={e => setFormData({...formData, talkTitle: e.target.value})} className="bg-zinc-900 border border-zinc-800 rounded-xl p-4 text-white focus:ring-primary focus:border-primary outline-none" placeholder="What would your talk be called?" />
+              </div>
+              <div className="flex flex-col gap-2">
+                <label className="text-[10px] font-black uppercase tracking-widest text-zinc-500">The Idea (The 'What' and 'Why')</label>
+                <textarea required value={formData.idea} onChange={e => setFormData({...formData, idea: e.target.value})} className="bg-zinc-900 border border-zinc-800 rounded-2xl p-6 text-white focus:ring-primary focus:border-primary min-h-[200px] outline-none resize-none" placeholder="Briefly describe your idea and why it matters to the world..."></textarea>
+              </div>
             </div>
           </div>
 
           <div className="flex flex-col items-center pt-10">
-            <button className="flex min-w-[240px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-lg font-bold hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/10 uppercase tracking-widest">
+            <button type="submit" className="flex min-w-[280px] cursor-pointer items-center justify-center rounded-xl h-16 px-10 bg-primary text-white text-lg font-black hover:brightness-110 active:scale-95 transition-all shadow-lg shadow-primary/20 uppercase tracking-widest">
               Submit Application
             </button>
-            <p className="text-neutral-600 text-xs mt-4">By submitting, you agree to our terms and speaker guidelines.</p>
+            <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-widest mt-6">By submitting, you agree to our terms and speaker guidelines.</p>
           </div>
         </form>
       </div>

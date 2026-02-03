@@ -17,16 +17,16 @@ const Join: React.FC = () => {
                   <h1 className="text-white text-4xl md:text-6xl font-black leading-tight tracking-tight uppercase">
                     Team Structure & Responsibilities
                   </h1>
-                  <h2 className="text-gray-400 text-base md:text-xl font-normal leading-relaxed">
+                  <h2 className="text-zinc-400 text-base md:text-xl font-normal leading-relaxed">
                     Building a platform for ideas requires a symphony of diverse skills. Discover how our departments collaborate to bring TEDxKU Leuven to life.
                   </h2>
                 </div>
                 <div className="flex gap-4">
-                  <Link to="/apply" className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold transition-transform hover:scale-105 uppercase tracking-widest shadow-xl shadow-primary/20">
-                    Current Openings
+                  <Link to="/join/marketing" className="flex min-w-[180px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-primary text-white text-base font-bold transition-transform hover:scale-105 uppercase tracking-widest shadow-xl shadow-primary/20">
+                    Discover the teams
                   </Link>
-                  <Link to="/team" className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-zinc-800 text-white text-base font-bold border border-zinc-700 hover:border-primary transition-all uppercase tracking-widest">
-                    The Board
+                  <Link to="/apply" className="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-14 px-8 bg-zinc-800 text-white text-base font-bold border border-zinc-700 hover:border-primary transition-all uppercase tracking-widest">
+                    Apply now
                   </Link>
                 </div>
               </div>
@@ -40,7 +40,7 @@ const Join: React.FC = () => {
             <div className="flex flex-col items-center text-center">
               <span className="material-symbols-outlined text-primary text-7xl mb-6 font-black">groups</span>
               <h2 className="text-white text-5xl font-black leading-tight tracking-tight pb-6 uppercase">Our Team Mission</h2>
-              <p className="text-gray-300 text-xl font-normal leading-relaxed max-w-3xl">
+              <p className="text-gray-300 text-xl font-normal leading-relaxed max-w-3xl font-medium">
                 To create a professional yet experimental platform that sparks deep discussion and connection, powered by the diverse talents and academic excellence of KU Leuven's global student body.
               </p>
             </div>
@@ -48,7 +48,7 @@ const Join: React.FC = () => {
         </div>
 
         {/* Hierarchy Diagram */}
-        <div className="px-6 md:px-40 flex justify-center py-24">
+        <div className="px-6 md:px-40 flex justify-center py-24 text-white">
           <div className="layout-content-container flex flex-col max-w-[1100px] flex-1">
             <h2 className="text-white text-4xl font-black leading-tight tracking-tight pb-16 text-center uppercase">Organizational Hierarchy</h2>
             <div className="flex flex-col items-center">
@@ -59,23 +59,26 @@ const Join: React.FC = () => {
               <div className="w-[2px] h-20 bg-gradient-to-b from-primary to-zinc-800"></div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6 w-full">
                 {[
-                  { title: "Production", icon: "theater_comedy", tasks: ["Venue Logistics", "Stage Design", "AV Management"] },
-                  { title: "Curation", icon: "psychology_alt", tasks: ["Speaker Selection", "Speech Coaching", "Theme Concept"] },
-                  { title: "Marketing", icon: "campaign", tasks: ["Social Media", "Brand Design", "Public Relations"], link: "/join/marketing" },
-                  { title: "Operations", icon: "handshake", tasks: ["Partnerships", "Finances", "Human Resources"] }
+                  { title: "Production", id: "production", icon: "theater_comedy", tasks: ["Venue Logistics", "Stage Design", "AV Management"] },
+                  { title: "Curation", id: "curation", icon: "psychology_alt", tasks: ["Speaker Selection", "Speech Coaching", "Theme Concept"] },
+                  { title: "Marketing", id: "marketing", icon: "campaign", tasks: ["Social Media", "Brand Design", "Public Relations"] },
+                  { title: "Operations", id: "operations", icon: "handshake", tasks: ["Partnerships", "Finances", "Human Resources"] }
                 ].map((dept, i) => (
                   <div key={i} className="flex flex-col items-center">
-                    <Link to={dept.link || "#"} className="w-full bg-zinc-900 p-8 rounded-2xl border border-zinc-800 shadow-2xl hover:border-primary/50 transition-all group">
+                    <div className="w-full bg-zinc-900 p-8 rounded-2xl border border-zinc-800 shadow-2xl hover:border-primary/50 transition-all group flex flex-col h-full">
                       <div className="flex items-center gap-4 mb-6">
                         <span className="material-symbols-outlined text-primary text-4xl">{dept.icon}</span>
-                        <h4 className="font-black text-xl uppercase tracking-wider">{dept.title}</h4>
+                        <h4 className="font-black text-xl uppercase tracking-wider text-white">{dept.title}</h4>
                       </div>
-                      <ul className="text-sm space-y-4 text-gray-400">
+                      <ul className="text-sm space-y-4 text-zinc-400 mb-8 flex-1">
                         {dept.tasks.map((task, ti) => (
                           <li key={ti} className="flex items-start gap-3">• <span className="group-hover:text-white transition-colors">{task}</span></li>
                         ))}
                       </ul>
-                    </Link>
+                      <Link to={`/join/${dept.id}`} className="mt-auto bg-black text-white text-[10px] font-black uppercase tracking-widest text-center py-3 rounded-lg border border-zinc-800 hover:bg-primary transition-all">
+                        View Roles
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -95,11 +98,11 @@ const Join: React.FC = () => {
                 { title: "External Relations", icon: "finance", desc: "The bridge between TEDxKU Leuven and the professional world. They secure sponsorships, manage institutional relationships with KU Leuven, and handle the organizational budget." }
               ].map((item, i) => (
                 <div key={i} className="flex flex-col gap-5 p-10 bg-zinc-900 rounded-2xl border border-zinc-800 hover:bg-zinc-800/80 transition-all group">
-                  <h3 className="font-black text-2xl flex items-center gap-4 uppercase tracking-wide">
+                  <h3 className="font-black text-2xl flex items-center gap-4 uppercase tracking-wide text-white">
                     <span className="material-symbols-outlined text-primary text-4xl">{item.icon}</span>
                     {item.title}
                   </h3>
-                  <p className="text-lg leading-relaxed text-gray-400 group-hover:text-zinc-300 transition-colors">
+                  <p className="text-lg leading-relaxed text-zinc-400 group-hover:text-zinc-200 transition-colors font-medium">
                     {item.desc}
                   </p>
                 </div>
@@ -112,12 +115,12 @@ const Join: React.FC = () => {
         <div className="px-6 md:px-40 flex justify-center py-24">
           <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
             <div className="bg-primary rounded-[3rem] p-16 text-center shadow-2xl relative overflow-hidden">
-              <h2 className="text-5xl font-black mb-8 uppercase tracking-tighter">Ready to Join the Movement?</h2>
-              <p className="mb-12 text-white/90 text-xl max-w-2xl mx-auto leading-relaxed">
+              <h2 className="text-5xl font-black mb-8 uppercase tracking-tighter text-white">Ready to Join the Movement?</h2>
+              <p className="mb-12 text-white/90 text-xl max-w-2xl mx-auto leading-relaxed font-medium">
                 We recruit new team members annually in October. Whether you're an engineer, artist, or business student, there's a place for you to grow.
               </p>
               <Link to="/apply" className="inline-block bg-white text-primary px-12 py-5 rounded-xl font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-xl uppercase tracking-widest">
-                Check Active Recruitment
+                Apply now
               </Link>
             </div>
           </div>

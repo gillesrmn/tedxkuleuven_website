@@ -51,14 +51,14 @@ const Home: React.FC = () => {
               <p className="text-zinc-400 text-xl leading-relaxed">
                 We are a non-profit platform for researchers, students, and local changemakers to share their unique perspectives with the world. Our mission is to spark deep discussion and connection.
               </p>
-              <div className="grid grid-cols-2 gap-8">
+              <div className="grid grid-cols-2 gap-8 text-white">
                 <div>
                   <div className="text-4xl font-black text-primary">15+</div>
-                  <div className="text-sm font-bold uppercase tracking-widest mt-2 text-white">Annual Events</div>
+                  <div className="text-sm font-bold uppercase tracking-widest mt-2">Annual Events</div>
                 </div>
                 <div>
                   <div className="text-4xl font-black text-primary">120+</div>
-                  <div className="text-sm font-bold uppercase tracking-widest mt-2 text-white">Global Speakers</div>
+                  <div className="text-sm font-bold uppercase tracking-widest mt-2">Global Speakers</div>
                 </div>
               </div>
             </div>
@@ -66,19 +66,19 @@ const Home: React.FC = () => {
         </div>
       </div>
 
-      {/* Features Grid - Moved Above Experience */}
+      {/* Features Grid - Updated style to match partner benefits */}
       <div className="py-24 bg-black">
         <div className="mx-auto max-w-[1400px] px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-zinc-800 border border-zinc-800">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               { icon: 'calendar_today', title: 'Flagship Events', desc: 'Our annual conferences bring together hundreds of thinkers for a full day of inspiration and multidisciplinary talks.' },
               { icon: 'mic_external_on', title: 'Diverse Voices', desc: 'From student activists to industry leaders, we platform the voices that are redefining the boundaries of knowledge.' },
               { icon: 'groups', title: 'Active Community', desc: 'Join a vibrant network of over 2,000 members in the Leuven ecosystem, building connections that last beyond the stage.' }
             ].map((item, i) => (
-              <div key={i} className="bg-black p-12 flex flex-col gap-6 group hover:bg-zinc-950 transition-colors text-left">
+              <div key={i} className="flex flex-col gap-6 rounded-xl border border-zinc-800 bg-zinc-900/50 p-12 hover:border-primary/50 transition-all group text-left">
                 <span className="material-symbols-outlined text-primary text-4xl">{item.icon}</span>
                 <h4 className="text-2xl font-black uppercase tracking-tight text-white">{item.title}</h4>
-                <p className="text-zinc-400">{item.desc}</p>
+                <p className="text-zinc-400 text-lg leading-relaxed">{item.desc}</p>
               </div>
             ))}
           </div>
@@ -91,9 +91,9 @@ const Home: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
             <div className="max-w-2xl">
               <h2 className="text-primary text-sm font-black uppercase tracking-[0.3em] mb-4">The Experience</h2>
-              <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-white">Capturing the Spark</h3>
+              <h3 className="text-4xl md:text-5xl font-black tracking-tighter text-white uppercase">Capturing the Spark</h3>
             </div>
-            <Link to="/events" className="group text-primary font-black uppercase tracking-widest flex items-center gap-3 text-sm hover:translate-x-2 transition-transform">
+            <Link to="/past-events" className="group text-primary font-black uppercase tracking-widest flex items-center gap-3 text-sm hover:translate-x-2 transition-transform">
               View Full Archive
               <span className="material-symbols-outlined font-black">arrow_right_alt</span>
             </Link>
@@ -107,7 +107,7 @@ const Home: React.FC = () => {
               "https://lh3.googleusercontent.com/aida-public/AB6AXuCuCzX1YZO4GF8QDkjVZgLKE6ItNWzA06GYZIW0h0ZjkkoPAV6ct-EBiKqGyM-mZtk6xP1O-AT5zP28kVfZM1O_eV5tkcDdaVvnY71A6-e0qNIXR-V8lKMeKrOj9HOtc-1QPahIMLPLo0N_9Z3KtlwsXg09tC-TRXcCJXXtuncNznYZHsHi0Nsp1b9fYqKo2x0YbOJrwSsyr5C7Nr0L8C-a6S9__23BcXvtt6WLfztFatk2-38HhHSaVu6ool713KHo-7quaS7VGVo",
               "https://lh3.googleusercontent.com/aida-public/AB6AXuDtwt_wDHwFxVlynh8m9qIyLxBeOnDDcuYQ7f0XS8ZtGQgcRxz4HhLUl4Mf0lJzlPtTnJbMyLOu7mKP1U3g4IZnQTRIDFM9aXhW45SpBEqzWYhbryCU_wzTOKGtH2py1awTpPDGO-qOdA4mgZTccZnTUaMYHZnNOq-X-_ARnmFg_mcCAh951q7CcEJ1XuiGl4VUqM2YwUAzbQe5ksDKTcK0RdMWMHGddCDPcaCdFPTZnwQGONd-jroFIdRmrTUjov6tHlHzvqXsmoA"
             ].map((src, i) => (
-              <div key={i} className="masonry-item relative group overflow-hidden bg-zinc-800">
+              <div key={i} className="masonry-item relative group overflow-hidden bg-zinc-800 rounded-xl">
                 <img alt={`TEDx Experience ${i+1}`} className="w-full h-auto grayscale hover:grayscale-0 transition-all duration-700 cursor-zoom-in" src={src} />
                 <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
               </div>
@@ -119,7 +119,7 @@ const Home: React.FC = () => {
       {/* CTA Section */}
       <div className="bg-primary py-24">
         <div className="mx-auto max-w-[1400px] px-6 text-center flex flex-col items-center">
-          <h2 className="text-white text-5xl md:text-7xl font-black tracking-tighter mb-8">READY TO BE PART<br/>OF THE STORY?</h2>
+          <h2 className="text-white text-5xl md:text-7xl font-black tracking-tighter mb-8 uppercase">READY TO BE PART<br/>OF THE STORY?</h2>
           <p className="text-white/90 text-xl md:text-2xl max-w-2xl font-medium mb-12">Whether you want to speak, volunteer, or attend, there's a place for you in our community.</p>
           <div className="flex flex-wrap justify-center gap-6">
             <Link to="/join" className="bg-white text-primary px-10 py-5 font-black uppercase tracking-[0.2em] text-sm hover:bg-black hover:text-white transition-all shadow-2xl">Join the Team</Link>
